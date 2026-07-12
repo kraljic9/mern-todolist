@@ -6,9 +6,9 @@ import { NextResponse } from "next/server";
 // GET TODOS
 
 export async function GET() {
-    await connectDB();
-
+    
     try{
+        await connectDB();
         
         const task = await Task.find();
 
@@ -25,8 +25,24 @@ export async function GET() {
 
 // ADD TODOS
 
-export async function POST() {
-     try{}catch(err){
+export async function POST(request) {
+     try{
+
+        const body = request.json();
+
+        const {title} = body;
+
+        if (!title) {
+            return NextResponse.json('Error accured: title is requried')
+        }
+
+        const newTask = Task.create({
+            title: title
+        });
+
+        return NextResponse.json(newTask)
+
+     }catch(err){
         return NextResponse.json('Error accured:', err)
     }
 }
