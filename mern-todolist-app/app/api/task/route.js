@@ -27,16 +27,20 @@ export async function GET() {
 
 export async function POST(request) {
      try{
+        await connectDB();
+        const body = await request.json();
 
-        const body = request.json();
+        console.log(body)
 
         const {title} = body;
 
+        console.log(title)
+
         if (!title) {
-            return NextResponse.json('Error accured: title is requried')
+            return NextResponse.json('Error accured: title is requried', {status:400})
         }
 
-        const newTask = Task.create({
+        const newTask = await Task.create({
             title: title
         });
 
