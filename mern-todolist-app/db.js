@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-if (!MONGO_URI) {
+if (!MONGODB_URI) {
     throw new Error('Error acured while processing MONGO_URI')
 }
 
@@ -16,7 +16,7 @@ async function connectDB() {
         } 
 
         if (!cached.promise) {
-           cached.promise = mongoose.connect(MONGO_URI).then((mongoose) => {
+           cached.promise = mongoose.connect(MONGODB_URI).then((mongoose) => {
             console.log("=> MongoDB Connected Successfully!")
             return mongoose
            })
