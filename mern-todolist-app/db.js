@@ -10,6 +10,7 @@ global.mongoose = global.mongoose || {conn: null, promise: null}
 const cached = global.mongoose;
 
 async function connectDB() {
+    try{
         if (cached.conn) {
             return cached.conn
         } 
@@ -21,8 +22,13 @@ async function connectDB() {
            })
         }
 
-    cached.conn = await cached.promise 
-    return cached.conn
+        cached.conn = await cached.promise;
+        return cached.conn
+    } catch(err) {
+        cached.promise = null;
+        cached.conn = null;
+        console.error("MongoDB Connection Failed:", err);
+    }
 }
 
 export default connectDB
