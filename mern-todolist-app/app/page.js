@@ -53,10 +53,11 @@ export default function Home() {
 
 
   return (
-    <>
+    <div className="container">
     <div className="top">
     <h1>To do list app, add, edit, delete your tasks</h1>
-    <input placeholder="Add a todo"></input>
+    <input placeholder="Write todo here"></input>
+    <button>Add todo</button>
     </div>
     
     <main>
@@ -66,6 +67,6 @@ export default function Home() {
           ))}
       </div>
     </main>
-    </>
+    </div>
   )
 }
