@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 // GET TODOS
 
 export async function GET() {
-    
     try{
         await connectDB();
         
