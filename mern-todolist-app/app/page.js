@@ -2,6 +2,7 @@
 
 import { updateTag } from "next/cache";
 import { useEffect, useState } from "react";
+import "./Todo.css"
 
 
 export default function Home() {
