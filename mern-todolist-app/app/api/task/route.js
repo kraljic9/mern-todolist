@@ -4,7 +4,6 @@ import connectDB from "@/db";
 import { NextResponse } from "next/server";
 
 // GET TODOS
-
 export async function GET() {
     try{
         await connectDB();
@@ -23,7 +22,6 @@ export async function GET() {
 }
 
 // ADD TODOS
-
 export async function POST(request) {
      try{
         await connectDB();
