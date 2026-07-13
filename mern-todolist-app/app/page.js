@@ -1,5 +1,6 @@
 'use client'
 
+import { updateTag } from "next/cache";
 import { useEffect, useState } from "react";
 
 
@@ -10,7 +11,8 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('')
     const [newTask, setNewTask] = useState('')
-  
+    const [editingTaskId, setEditingTaskId] = useState(null);
+
     // Display todo to ui
     async function fetchTodos(){
       try{
@@ -66,9 +68,41 @@ export default function Home() {
       const data = await response.json()
 
       setTasks([...tasks, data])
+
+      setNewTask('')
       }catch(err){
          console.log(err.message);
           setError(err.message)
+      }
+    }
+
+    // Edit todo
+
+    async function editTodo(updatedText, id) {
+      try{
+
+        const response = await fetch(`http://localhost:3000/api/task/${id}`, {
+          method:'PUT',
+          headers: {
+            'Content-type': 'application/json'
+          },
+          body: JSON.stringify({title: updatedText})
+        })
+
+        if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        const data = await response.json();
+
+        setTasks(tasks.map(t => t._id === id ? data.newTask : t));
+
+        setEditingTaskId(null);
+        setCurrentTask('');
+
+      }catch(err) {
+        console.log(err.message);
+        setError(err.message)
       }
     }
 
@@ -87,8 +121,25 @@ export default function Home() {
     <main>
       <div className="todos-container">
         {tasks ? tasks.map((task) => (
-           <div className="todo" key={task._id}><p className="todo-title">{task.title}</p><button className="edit-btn">EDIT</button><button className="delete-btn" onClick={() => removeTodo(task._id)}>DELETE</button></div>
-          )) : null}
+        editingTaskId !== task._id ? (
+        <div className="todo" key={task._id}><p className="todo-title">{task.title}</p>
+        <button className="edit-btn" onClick={() => {
+         setEditingTaskId(task._id)
+         setCurrentTask(task.title)
+        }
+          }>EDIT</button>
+        <button className="delete-btn" onClick={() => removeTodo(task._id)}>DELETE</button>
+        <button className="status-btn">({task.isCompleted === true ? 'Completed' : 'Not completed'})</button> 
+        </div>
+        )
+        :
+      (
+        <div className="todo" key={task._id}>
+        <input className="todo-title-input" value={currentTask} onChange={(e) => setCurrentTask(e.target.value)}></input>
+        <button className="save-change" onClick={() => editTodo(currentTask, task._id)}>Save</button>
+        <button className="cancel-btn" onClick={() => setEditingTaskId(null)}>Cancel</button>
+</div>
+       )   )) : null}
       </div>
     </main>
     </div>
