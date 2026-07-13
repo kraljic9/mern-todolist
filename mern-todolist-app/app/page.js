@@ -1,7 +1,7 @@
 'use client'
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
+
 
 export default function Home() {
   
@@ -29,6 +29,24 @@ export default function Home() {
       }
     }
 
+    async function removeTodo(id) {
+  try{
+      const response = await fetch(`http://localhost:3000/api/task/${id}`, {
+        method: 'DELETE',
+      })
+
+      if(!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+
+      setTasks(tasks.filter(task => task._id !== id ))
+
+      } catch(err){
+          console.log(err.message);
+          setError(err.message)
+      }
+    } 
+
     useEffect(() => {
       fetchTodos()
     },[])
@@ -38,12 +56,13 @@ export default function Home() {
     <>
     <div className="top">
     <h1>To do list app, add, edit, delete your tasks</h1>
+    <input placeholder="Add a todo"></input>
     </div>
     
     <main>
       <div className="todos-container">
         {tasks.map((task) => (
-           <div className="todo" key={'task-id'}><p className="todo-title">{task.title}</p><button className="edit-btn">EDIT</button><button className="delete-btn">DELETE</button></div>
+           <div className="todo" key={task._id}><p className="todo-title">{task.title}</p><button className="edit-btn">EDIT</button><button className="delete-btn" onClick={() => removeTodo(task._id)}>DELETE</button></div>
           ))}
       </div>
     </main>
