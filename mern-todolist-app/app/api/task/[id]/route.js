@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import mongoose from "mongoose";
 import connectDB from "@/db";
 import Task from "@/app/modules/route";
 
