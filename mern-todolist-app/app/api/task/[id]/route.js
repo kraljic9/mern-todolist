@@ -23,7 +23,6 @@ export async function GET(request, {params}) {
 
 export async function PUT(request, {params}) {
     try{
-
         await connectDB();
 
         const body = await request.json();
