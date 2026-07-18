@@ -10,12 +10,17 @@ const TaskSchema = new mongoose.Schema({
     isCompleted: {
         type: Boolean,
         default: false,
-    }}, 
+    
+    },
+        userId: {
+          type: String,
+          required:true,  
+        },
+    },
     {
         timestamps: true
     }
 )
 
 const Task = mongoose.models.Task || mongoose.model("Task", TaskSchema);
-
 export default Task
