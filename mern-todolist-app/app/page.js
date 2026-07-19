@@ -1,11 +1,13 @@
 'use client'
-
-import { updateTag } from "next/cache";
 import { useEffect, useState } from "react";
 import "./Todo.css"
+import { useSession, signIn, signOut } from "next-auth/react";
 
 
 export default function Home() {
+
+    const {data: session, status} = useSession();
+
   
     const [tasks, setTasks] = useState([]);
     const [currentTask, setCurrentTask] = useState('');
@@ -108,14 +110,43 @@ export default function Home() {
     }
 
     useEffect(() => {
+      if (session) {
       fetchTodos()
-    },[])
+      }
+    },[session])
 
+    if (status === "loading") {
+    return <div className="container" style={{ textAlign: "center", marginTop: "100px" }}>Checking authentication...</div>;
+  }
+
+  //SCREEN A: If not logged in, show a Sign In button
+
+  if (!session) {
+    return(
+      <div className="container" style={{textAlign: 'Center', marginTop: '100px'}}>
+          <h1>To Do List App</h1>
+          <p>Please log in to manage your private task.</p>
+          <button className="add-btn" onClick={() => signIn("github")}>
+            Sign In with Github
+          </button>
+        </div>
+    )
+  }
+
+  // SCREEN B: Logged in! Show the full UI dashboard
   return (
     <div className="container">
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid #eee", paddingBottom: "10px" }}>
+        <span>Logged in as: <strong>{session.user.name || session.user.email}</strong></span>
+        <button onClick={() => signOut()} style={{ padding: "5px 10px", cursor: "pointer", backgroundColor: "#ff4d4d", color: "#fff", border: "none", borderRadius: "4px" }}>
+          Log Out
+        </button>
+      </div>
+
     <div className="top">
     <h1>To do list app, add, edit, delete your tasks</h1>
-    <input placeholder="Write todo here" onChange={(e) => setNewTask(e.target.value)}></input>
+    <input placeholder="Write todo here" onChange={(e) => setNewTask(e.target.value)} value={newTask}></input>
     <button className="add-btn" onClick={() => addTodo(newTask)}>Add todo</button>
     </div>
     
