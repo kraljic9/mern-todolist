@@ -1,49 +1,32 @@
-import mongoose from "mongoose";
-import Task from "@/app/modules/route";
 import connectDB from "@/db";
+import Task from "../../modules/route.js";
 import { NextResponse } from "next/server";
 
-// GET TODOS
+// GET ALL TASKS
 export async function GET() {
-    try{
+    try {
         await connectDB();
-        
-        const task = await Task.find();
-
-        if (!task || task.length === 0) {
-            return NextResponse.json({ message: "No tasks found" }, { status: 404})
-        }
-
-        return NextResponse.json(task, {status: 200})
-
-    }catch(err){
-        return NextResponse.json('Error accured:', err)
+        const tasks = await Task.find();
+        return NextResponse.json(tasks || [], { status: 200 });
+    } catch (err) {
+        return NextResponse.json({ message: 'Error occurred', error: err.message }, { status: 500 });
     }
 }
 
-// ADD TODOS
+// CREATE A TASK
 export async function POST(request) {
-     try{
+     try {
         await connectDB();
         const body = await request.json();
-
-        console.log(body)
-
-        const {title} = body;
-
-        console.log(title)
+        const { title } = body;
 
         if (!title) {
-            return NextResponse.json('Error accured: title is requried', {status:400})
+            return NextResponse.json({ message: 'Error occurred: title is required' }, { status: 400 });
         }
 
-        const newTask = await Task.create({
-            title: title
-        });
-
-        return NextResponse.json(newTask)
-
-     }catch(err){
-        return NextResponse.json('Error accured:', err)
+        const newTask = await Task.create({ title });
+        return NextResponse.json(newTask, { status: 201 });
+     } catch (err) {
+        return NextResponse.json({ message: 'Error occurred', error: err.message }, { status: 500 });
     }
 }

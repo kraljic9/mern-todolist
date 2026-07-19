@@ -99,7 +99,6 @@ export default function Home() {
         const data = await response.json();
 
         setTasks(tasks.map(t => t._id === id ? data.newTask : t));
-
         setEditingTaskId(null);
         setCurrentTask('');
 
